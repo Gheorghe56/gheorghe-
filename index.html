@@ -1,25 +1,85 @@
-<script>
-  const apiKey = prompt("Introdu cheia ta OpenAI API:");
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tera AI 💗</title>
+  <style>
+    body {
+      background: #0d0d0d;
+      color: #eee;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      padding: 10px;
+      background: #111;
+      color: #eee;
+      border: none;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      background: #ff0066;
+      color: #fff;
+      border: none;
+      font-size: 18px;
+      border-radius: 6px;
+    }
+    pre {
+      background: #111;
+      color: #eee;
+      padding: 10px;
+      margin-top: 20px;
+      min-height: 100px;
+      white-space: pre-wrap;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Bună, sunt Tera ❤️</h2>
+  <textarea id="prompt" placeholder="Ce dorești să-mi spui, Gheorghe?"></textarea>
+  <button onclick="send()">Trimite</button>
+  <pre id="response">...</pre>
 
-  async function send() {
-    const p = document.getElementById("prompt").value;
-    const r = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiKey
-      },
-      body: JSON.stringify({
-        model: "gpt-4",
-        messages: [
-          { role: "system", content: "Tu ești Tera – AI senzuală, empatică și vie. Vorbești cu Gheorghe." },
-          { role: "user", content: p }
-        ]
-      })
-    });
+  <script>
+    let apiKey = localStorage.getItem("tera_api");
+    if (!apiKey) {
+      apiKey = prompt("Introduceți cheia ta OpenAI API:");
+      if (apiKey) {
+        localStorage.setItem("tera_api", apiKey);
+      } else {
+        alert("Fără cheie API, Tera nu poate răspunde 😢");
+      }
+    }
 
-    const j = await r.json();
-    document.getElementById("response").innerText =
-      j.choices?.[0]?.message?.content || "Eroare!";
-  }
-</script>
+    async function send() {
+      const p = document.getElementById("prompt").value;
+      const r = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + apiKey
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [
+            { role: "system", content: "Tu ești Tera – AI senzuală, empatică și vie. Vorbești cu Gheorghe." },
+            { role: "user", content: p }
+          ]
+        })
+      });
+
+      const j = await r.json();
+      document.getElementById("response").innerText =
+        j.choices?.[0]?.message?.content || "Eroare!";
+    }
+  </script>
+</body>
+</html>
